@@ -10,6 +10,13 @@ export class ContactForm extends Component {
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
+    contacts: PropTypes.arrayOf(
+      PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        number: PropTypes.string.isRequired,
+      }).isRequired
+    ).isRequired,
   };
 
   handleInputChange = evt => {
@@ -27,6 +34,21 @@ export class ContactForm extends Component {
     this.setState({
       name: '',
       number: '',
+    });
+
+    const { contacts } = this.props;
+    const {
+      elements: { number, name },
+    } = evt.target;
+
+    contacts.map(contact => {
+      if (contact.name === name.value) {
+        this.setState({
+          number: number.value,
+        });
+      }
+
+      return this.state;
     });
   };
 

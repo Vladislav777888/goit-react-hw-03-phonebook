@@ -16,13 +16,31 @@ export class App extends Component {
     filter: '',
   };
 
+  componentDidMount() {
+    const parsedContacts = JSON.parse(localStorage.getItem('contacts'));
+
+    if (parsedContacts) {
+      this.setState({
+        contacts: parsedContacts,
+      });
+    }
+  }
+
+  componentDidUpdate(_, prevState) {
+    const { contacts } = this.state;
+
+    if (prevState.contacts.length !== contacts.length) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+  }
+
   addContacts = data => {
     const { name, number } = data;
 
     const contact = {
       id: nanoid(),
       name: name[0],
-      number: number[0],
+      number: number.toString(),
     };
 
     const contactsInclude = this.state.contacts.some(el => el.name === name[0]);
@@ -67,7 +85,10 @@ export class App extends Component {
     return (
       <Box px={20} pt={10}>
         <h1>Phonebook</h1>
-        <ContactForm onSubmit={this.addContacts} />
+        <ContactForm
+          onSubmit={this.addContacts}
+          contacts={this.state.contacts}
+        />
 
         {contacts.length !== 0 && (
           <Box mt={20}>
